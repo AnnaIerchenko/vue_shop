@@ -3,10 +3,10 @@
     title: String,
     imageUrl: String,
     price: Number,
-    isFavourite: Boolean,
+    isFavorite: Boolean,
     isAdded: Boolean,
     onClickAdd: Function,
-    onClickFavourite: Function,
+    onClickFavorite: Function,
   })
 </script>
 <template>
