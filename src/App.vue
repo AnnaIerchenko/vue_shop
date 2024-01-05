@@ -26,6 +26,26 @@ const onChangeSelect = (e) => {
 const onChangeSearchInput = (e) => {
   filters.searchQuery = e.target.value
 }
+const fetchFavorites = async () => {
+  try {
+    const { data: favorites } = await axios.get(`https://11d67ba88938e517.mokky.dev/favorites`)
+    items.value = items.value.map((item) => {
+      const favorite = favorites.find((favorite) => favorite.parentId === item.id)
+      if(!favorite) {
+        return item
+      }
+      return {
+        ...item,
+        isFavorite: true,
+        favoriteId: favorite.id,
+      }
+    })
+    console.log(items.value)
+  }catch(err){
+    console.log(err)
+  }
+}
+
 const fetchItems = async() => {
   try {
     const params = {
@@ -38,13 +58,20 @@ const fetchItems = async() => {
     const { data } = await axios.get(`https://11d67ba88938e517.mokky.dev/items`, {
       params
   })
-    items.value = data
+    items.value = data.map((obj) => ({
+      ...obj,
+      isFavorite: false,
+      isAdded: false
+    }))
     // console.log(data)
   }catch(arr){
     console.log(arr)
   }
 }
-onMounted(fetchItems)
+onMounted(async () => {
+  fetchItems()
+  fetchFavorites()
+})
 watch(filters, fetchItems)
 </script>
 
@@ -74,7 +101,7 @@ watch(filters, fetchItems)
             />
           </div>
         </div>
-        <card-list :items="items"/>
+        <card-list :items="items" />
       </div>
     </div>
 </template>

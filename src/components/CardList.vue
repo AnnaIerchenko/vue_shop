@@ -2,7 +2,7 @@
   import CardVue from './CardVue.vue';
 
   defineProps({
-    items: Array
+    items: Array,
   })
   const onClickAdd = () => {
     alert("Addddd")
@@ -10,16 +10,17 @@
 </script>
 
 <template>
-  <div class="flex justify-center flex-wrap gap-5">
+  <div class="grid grid-cols-4 gap-5">
     <card-vue 
       v-for="item in items"
+      :id="item.id"
       :key="item.id"
       :imageUrl="item.imageUrl" 
       :title="item.title"
       :price="item.price"
-      :isFavorite="isFavorite"
-      :onClickAdd="onClickAdd" 
-      :isAdded="isAdded"
+      :onClickAdd="onClickAdd"
+      :isFavorite="item.isFavorite"
+      
     />
   </div>
 </template>

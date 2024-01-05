@@ -16,7 +16,7 @@
       class="absolute top-8 left-8" 
       :src="!isFavourite ? '/like-1.svg' : './like-2.svg'" 
       alt="like"
-      @click="onClickFavourite"
+      @click="onClickFavorite"
     />
     <img :src="imageUrl" alt="sneakers">
     <p class="mt-2">{{ title }}</p>
