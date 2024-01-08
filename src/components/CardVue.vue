@@ -1,5 +1,7 @@
 <script setup>
-  defineProps({
+
+defineProps({
+    id: Number,
     title: String,
     imageUrl: String,
     price: Number,
@@ -8,13 +10,14 @@
     onClickAdd: Function,
     onClickFavorite: Function,
   })
+
 </script>
 <template>
   <div class="relative border bg-white border-slate-100 rounded-3xl p-8 cursor-pointer hover:scale-95 transition-all hover:shadow-xl">
     
     <img 
       class="absolute top-8 left-8" 
-      :src="!isFavourite ? '/like-1.svg' : './like-2.svg'" 
+      :src="!isFavorite ? '/like-1.svg' : '/like-2.svg'" 
       alt="like"
       @click="onClickFavorite"
     />

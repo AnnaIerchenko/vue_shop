@@ -1,12 +1,16 @@
 <script setup>
-  import CardVue from './CardVue.vue';
+import CardVue from './CardVue.vue';
 
   defineProps({
     items: Array,
   })
+  //function props
+  const emit = defineEmits(['addToFavorite'])
   const onClickAdd = () => {
-    alert("Addddd")
+    // alert("Addddd")
   }
+
+ 
 </script>
 
 <template>
@@ -19,8 +23,8 @@
       :title="item.title"
       :price="item.price"
       :onClickAdd="onClickAdd"
+      :onClickFavorite="() => emit('addToFavorite', item)"
       :isFavorite="item.isFavorite"
-      
     />
   </div>
 </template>
