@@ -1,10 +1,9 @@
 <script setup>
-import { onMounted, reactive, ref, watch } from 'vue';
+import { computed, onMounted, provide, reactive, ref, watch } from 'vue';
 import HeaderVue from './components/HeaderVue.vue';
 import CardList from './components/CardList.vue';
+import DrawerView from './components/DrawerView.vue';
 import axios from 'axios';
-// import DrawerView from './components/DrawerView.vue';
-
 // onMounted(() => {
   // fetch('https://11d67ba88938e517.mokky.dev/items')
   //   .then((res) => res.json())
@@ -15,11 +14,62 @@ import axios from 'axios';
 // })
 const items = ref([])
 // { value: []}
+const cart = ref([])
+const isCreatingOrder = ref(false)
+
+const drawerOpen = ref(false)
+
+const totalPrice = computed(() => cart.value.reduce((acc, item) => acc + item.price, 0))
+const taxPrice = computed(() => Math.round((totalPrice.value * 5) / 100))
+
+const cartIsEmpty = computed(() => cart.value.length === 0)
+const cartButtonDisabled = computed(() => isCreatingOrder.value || cartIsEmpty.value)
+
+const closeDrawer = () => {
+  drawerOpen.value = false
+}
+const openDrawer = () => {
+  drawerOpen.value = true
+}
 
 const filters = reactive({
   sortBy: 'title',
   searchQuery: '',
 })
+const addToCart = (item) => {
+  cart.value.push(item)
+  item.isAdded = true
+}
+const removeFromCart = (item) => {
+  const index = cart.value.indexOf(item);
+  if (index > -1) {
+    cart.value.splice(index, 1);
+    item.isAdded = false;
+  }
+}
+const createOrder = async () => {
+  try {
+    isCreatingOrder.value = true
+    const { data } = await axios.post(`https://11d67ba88938e517.mokky.dev/orders`, {
+      items: cart.value,
+      totalPrice: totalPrice.value,
+  })
+  cart.value = []
+  return data
+  } catch(err) {
+    console.log(err)
+  } finally {
+    isCreatingOrder.value = false
+  }
+}
+const onClickAddPlus = (item) => {
+  if(!item.isAdded){
+    addToCart(item)
+  }else {
+    removeFromCart(item)
+  }
+  console.log(cart)
+}
 const onChangeSelect = (e) => {
   filters.sortBy = e.target.value
 }
@@ -91,13 +141,32 @@ onMounted(async () => {
   fetchFavorites()
 })
 watch(filters, fetchItems)
+watch(cart, () => {
+  items.value = items.value.map((item) => ({
+    ...item,
+    isAdded: false
+  }))
+})
+provide('cart', {
+  cart,
+  closeDrawer,
+  openDrawer,
+  addToCart,
+  removeFromCart,
+})
 
 </script>
 
 <template>
-  <!-- <drawer-view /> -->
+  <drawer-view 
+    v-if="drawerOpen" 
+    :totalPrice="totalPrice" 
+    :taxPrice="taxPrice"
+    @createOrder="createOrder"
+    :button-disabled="cartButtonDisabled"
+  />
     <div class="bg-white w-4/5 m-auto rounded-xl shadow-xl mt-14">
-      <header-vue />
+      <header-vue :total-price="totalPrice" @open-drawer="openDrawer"/>
       <div class="p-10">
         <div class="flex justify-between items-center">
           <h2 class="text-3xl font-bold mb-8">All SNEAKERS</h2>
@@ -120,7 +189,7 @@ watch(filters, fetchItems)
             />
           </div>
         </div>
-        <card-list :items="items" @addToFavorite="addToFavorite"/>
+        <card-list :items="items" @add-to-favorite="addToFavorite" @add-to-cart="onClickAddPlus"/>
       </div>
     </div>
 </template>
