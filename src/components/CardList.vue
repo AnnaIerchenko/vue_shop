@@ -10,7 +10,7 @@ import CardVue from './CardVue.vue';
 </script>
 
 <template>
-  <div class="grid grid-cols-4 gap-5">
+  <div class="grid grid-cols-4 gap-5" v-auto-animate>
     <card-vue 
       v-for="item in items"
       :id="item.id"
