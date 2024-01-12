@@ -3,7 +3,7 @@ import { computed, provide, ref, watch } from 'vue';
 import HeaderVue from './components/HeaderVue.vue';
 import DrawerView from './components/DrawerView.vue';
 // import HomePage from './pages/HomePage.vue';
-import axios from 'axios';
+
 // onMounted(() => {
   // fetch('https://11d67ba88938e517.mokky.dev/items')
   //   .then((res) => res.json())
@@ -15,15 +15,11 @@ import axios from 'axios';
 
 // { value: []}
 const cart = ref([])
-const isCreatingOrder = ref(false)
-
 const drawerOpen = ref(false)
 
 const totalPrice = computed(() => cart.value.reduce((acc, item) => acc + item.price, 0))
 const taxPrice = computed(() => Math.round((totalPrice.value * 5) / 100))
 
-const cartIsEmpty = computed(() => cart.value.length === 0)
-const cartButtonDisabled = computed(() => isCreatingOrder.value || cartIsEmpty.value)
 
 const closeDrawer = () => {
   drawerOpen.value = false
@@ -44,22 +40,6 @@ const removeFromCart = (item) => {
     item.isAdded = false;
   }
 }
-const createOrder = async () => {
-  try {
-    isCreatingOrder.value = true
-    const { data } = await axios.post(`https://11d67ba88938e517.mokky.dev/orders`, {
-      items: cart.value,
-      totalPrice: totalPrice.value,
-  })
-  cart.value = []
-  return data
-  } catch(err) {
-    console.log(err)
-  } finally {
-    isCreatingOrder.value = false
-  }
-}
-
 
 
 watch(cart, 
@@ -84,8 +64,6 @@ provide('cart', {
     v-if="drawerOpen" 
     :totalPrice="totalPrice" 
     :taxPrice="taxPrice"
-    @createOrder="createOrder"
-    :button-disabled="cartButtonDisabled"
   />
     <div class="bg-white w-4/5 m-auto rounded-xl shadow-xl mt-14">
       <header-vue :total-price="totalPrice" @open-drawer="openDrawer"/>
