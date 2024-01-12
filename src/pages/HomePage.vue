@@ -2,6 +2,7 @@
   import CardList from '../components/CardList.vue';
   import axios from 'axios';
 import { inject, onMounted, reactive, ref, watch } from 'vue';
+import debounce from 'lodash.debounce';
 
   const { cart, addToCart, removeFromCart } = inject('cart');
 
@@ -21,9 +22,10 @@ import { inject, onMounted, reactive, ref, watch } from 'vue';
 const onChangeSelect = (e) => {
   filters.sortBy = e.target.value
 }
-const onChangeSearchInput = (e) => {
+const onChangeSearchInput = debounce((e) => {
   filters.searchQuery = e.target.value
-}
+}, 300)
+
 const addToFavorite = async (item) => {
   try {
     if(!item.isFavorite){

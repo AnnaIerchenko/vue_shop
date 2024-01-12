@@ -2,6 +2,7 @@
 import { computed, provide, ref, watch } from 'vue';
 import HeaderVue from './components/HeaderVue.vue';
 import DrawerView from './components/DrawerView.vue';
+
 // import HomePage from './pages/HomePage.vue';
 
 // onMounted(() => {
@@ -40,7 +41,6 @@ const removeFromCart = (item) => {
     item.isAdded = false;
   }
 }
-
 
 watch(cart, 
   () => {
