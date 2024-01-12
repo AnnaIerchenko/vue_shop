@@ -3,6 +3,7 @@ import CardVue from './CardVue.vue';
 
   defineProps({
     items: Array,
+    isFavorites: Boolean,
   })
   //function props
   const emit = defineEmits(['addToFavorite', 'addToCart'])
@@ -18,8 +19,8 @@ import CardVue from './CardVue.vue';
       :imageUrl="item.imageUrl" 
       :title="item.title"
       :price="item.price"
-      :onClickFavorite="() => emit('addToFavorite', item)"
-      :onClickAdd="() => emit('addToCart', item)"
+      :onClickFavorite="isFavorites ? null : () => emit('addToFavorite', item)"
+      :onClickAdd="isFavorites ? null : () => emit('addToCart', item)"
       :isFavorite="item.isFavorite"
       :isAdded="item.isAdded"
     />

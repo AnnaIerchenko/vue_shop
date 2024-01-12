@@ -16,6 +16,7 @@ defineProps({
   <div class="relative border bg-white border-slate-100 rounded-3xl p-8 cursor-pointer hover:scale-95 transition-all hover:shadow-xl">
     
     <img 
+      v-if="onClickFavorite"
       class="absolute top-8 left-8" 
       :src="!isFavorite ? '/like-1.svg' : '/like-2.svg'" 
       alt="like"
@@ -30,7 +31,10 @@ defineProps({
         <b>{{ price }}$</b>
       </div>
 
-      <img @click="onClickAdd" :src="!isAdded ? '/plus.svg' : './checked.svg'" alt="plus">
+      <img 
+        v-if="onClickAdd"
+        @click="onClickAdd" 
+        :src="!isAdded ? '/plus.svg' : './checked.svg'" alt="plus">
     </div>
   </div>
 </template>
